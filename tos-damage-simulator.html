@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<head>
+<meta charset="utf-8">
+<title>ToSダメージ計算シミュレーター | うぅ～い！てりゃーい！ToS (Tree of Savior）まとめ</title>
+<link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin>
+<link rel="preconnect" href="https://stats.g.doubleclick.net" crossorigin>
+
+<link rel="stylesheet" href="https://uuuui-tos.net/wp-content/themes/xeory_base/xeory_base/lib/css/normalize.css">
+<link rel="stylesheet" href="https://uuuui-tos.net/wp-content/themes/xeory_base/xeory_base/lib/css/reset.css">
+<link rel="stylesheet" href="https://uuuui-tos.net/wp-content/themes/xeory_base/xeory_base/lib/css/style.css">
+<script src="https://uuuui-tos.net/wp-content/themes/xeory_base/xeory_base/lib/js/vue.min.js"></script>
+<script src="https://uuuui-tos.net/wp-content/themes/xeory_base/xeory_base/lib/js/axios.min.js"></script>
+
+</head>
+
+<body>
+  <div id="app">
+    <header id="header">
+      <h1><a href="https://uuuui-tos.net/tos-damage-simulator.html">ToSダメージ計算シミュレーター | うぅ～い！てりゃーい！ToS (Tree of Savior）まとめ</a></h1>
+    </header>
+  <div class="container">
+    <div class="player">
+      <div class="inner">
+        <h2>プレイヤー</h2>
+        
+        <div class="block">
+          <label>最小物理攻撃力/補助攻撃力</label>
+          <input v-model.number="min_atk" type="range" max="10000" step="100">
+          <input v-model.number="min_atk" type="number" min="0" tabindex="1">
+        </div>
+
+        <div class="block">
+          <label>最大攻撃力/補助攻撃力</label>
+          <input v-model.number="max_atk" type="range" max="10000" step="100">
+          <input v-model.number="max_atk" type="number" min="0" tabindex="2">
+        </div>
+
+        <div class="block">
+          <label>最小魔法攻撃力</label>
+          <input v-model.number="min_matk" type="range" max="10000" step="100">
+          <input v-model.number="min_matk" type="number" min="0" tabindex="2">
+        </div>
+
+        <div class="block">
+          <label>最大魔法攻撃力</label>
+          <input v-model.number="max_matk" type="range" max="10000" step="100">
+          <input v-model.number="max_matk" type="number" min="0" tabindex="2">
+        </div>
+
+        <div class="block">
+          <label>魔法増幅</label>
+          <input v-model.number="matk_amp" type="range" max="10000" step="100">
+          <input v-model.number="matk_amp" type="number" min="0" tabindex="2">
+        </div>
+
+        <div class="block">
+          <label>属性攻撃力</label>
+          <input v-model.number="elem_atk" type="range" max="20000" step="100">
+          <input v-model.number="elem_atk" type="number" min="0" tabindex="3">
+        </div>
+
+        <div class="block">
+          <label>クリティカル攻撃力</label>
+          <input v-model.number="crit_atk" type="range" max="10000" step="100">
+          <input v-model.number="crit_atk" type="number" min="0" tabindex="4">
+        </div>
+
+        <div class="block">
+          <label>クリティカル発生</label>
+          <input v-model.number="crit_prob" type="range" max="3000" min="10" step="10">
+          <input v-model.number="crit_prob" type="number" min="0" tabindex="5">
+        </div>
+
+        <div class="block">
+          <label>命中</label>
+          <input v-model.number="hit" type="range" min="0" max="1000" step="10">
+          <input v-model.number="hit" type="number" min="0" tabindex="6">
+        </div>
+
+        <div class="block">
+          <label>ブロック貫通</label>
+          <input v-model.number="block_pen" type="range" min="0" max="100">
+          <input v-model.number="block_pen" type="number" min="0" tabindex="7">
+        </div>
+
+        <div class="block">
+          <label>スキル倍率 (%)</label>
+          <input v-model.number="skill_fact" type="range" max="20000" step="10">
+          <input v-model.number="skill_fact" type="number" min="0" tabindex="8">
+        </div>
+
+        <div class="block">
+          <label>スキル特性 - 1毎に0.5%増加</label>
+          <input v-model.number="skill_attr" type="range" max="100" step="5">
+          <input v-model.number="skill_attr" type="number" min="0" tabindex="9">
+        </div>
+
+
+        <div class="block">
+          <label>カード倍率 (%)</label>
+          <input v-model.number="card" type="range">
+          <input v-model.number="card" type="number" min="0" tabindex="9">
+        </div>
+
+        <div class="block">
+          <label>DoV (%)</label>
+          <input v-model.number="dov" type="range" max="40">
+          <input v-model.number="dov" type="number" min="0" tabindex="9">
+        </div>
+
+        <div class="block">
+          <label>任意倍率 (%)</label>
+          <input v-model.number="any_mul" type="range" max="10000">
+          <input v-model.number="any_mul" type="number" min="0" tabindex="9">
+        </div>
+
+        <div class="block">
+          <label>任意加算</label>
+          <input v-model.number="any_add" type="range" max="10000">
+          <input v-model.number="any_add" type="number" min="0" tabindex="9">
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="outer">
+        <div class="damage">
+          <h2>計算結果</h2>
+          <div class="inner">
+            <div class="stats">
+              {{ calDmg }} 
+              <ul>
+                <li>クリティカル率: {{ calCrit }}</li>
+                <li>命中率: {{ calHit }}</li>
+                <li>被ブロック率: {{ calBlock }}</li>
+              </ul>
+            </div>
+
+            <div class="calc">
+              <table>
+              <thead>
+                <tr><th></th><th>最少</th><th>平均</th><th>最大</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>物理ダメージ</th>
+                  <td>{{ Math.floor(calc.dmg.min.normal) }}</td>
+                  <td>{{ Math.floor(calc.dmg.avg.normal) }}</td>
+                  <td>{{ Math.floor(calc.dmg.max.normal) }}</td>
+                </tr>
+
+                <tr>
+                  <th>クリティカルダメージ</th>
+                  <td>{{ Math.floor(calc.dmg.min.crit) }}</td>
+                  <td>{{ Math.floor(calc.dmg.avg.crit) }}</td>
+                  <td>{{ Math.floor(calc.dmg.max.crit) }}</td>
+                </tr>
+                
+
+                <tr>
+                  <th>物理ダメージ期待値</th>
+                  <td>{{ Math.floor(calc.dmg.min.expected) }}</td>
+                  <td>{{ Math.floor(calc.dmg.avg.expected) }}</td>
+                  <td>{{ Math.floor(calc.dmg.max.expected) }}</td>
+                </tr>
+
+                <tr>
+                  <th>魔法ダメージ</th>
+                  <td>{{ Math.floor(calc.dmg.min.magic) }}</td>
+                  <td>{{ Math.floor(calc.dmg.avg.magic) }}</td>
+                  <td>{{ Math.floor(calc.dmg.max.magic) }}</td>
+                </tr>
+              </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="mon-wrap">
+          <div class="enemy">
+            <div class="inner">
+
+              <div class="ib-box">
+                <h2>エネミー</h2>
+
+                <div class="mob-attr">
+                  <p>{{ ele }}{{ def_type }}</p>
+
+                  <select v-model="selected" v-on:click="setMobStats">
+                    <option disable value="">対象Mob</option>
+                    <option v-for="i in mob" v-bind:value="i.class_id">
+                    {{ i.name }}
+                  </select>
+                </div>
+              </div>
+
+              <div class="block">
+                <label>防御力</label>
+                <input v-model.number="enemy_def" type="range" max="10000" step="100">
+                <input v-model.number="enemy_def" type="number" min="0" tabindex="10">
+              </div>
+
+              <div class="block">
+                <label>魔法防御力</label>
+                <input v-model.number="enemy_mdef" type="range" max="10000" step="100">
+                <input v-model.number="enemy_mdef" type="number" min="0" tabindex="10">
+              </div>
+
+              <div class="block">
+                <label>クリティカル抵抗</label>
+                <input v-model.number="crit_prob_resist" type="range" max="1000" step="10">
+                <input v-model.number="crit_prob_resist" type="number" min="0" tabindex="11">
+              </div>
+
+              <div class="block">
+                <label>回避</label>
+                <input v-model.number="evasion" type="range" min="0" max="1000" step="10">
+                <input v-model.number="evasion" type="number" min="0" tabindex="12">
+              </div>
+
+
+              <div class="block">
+                <label>ブロック率</label>
+                <input v-model.number="block" type="range" min="0" max="500">
+                <input v-model.number="block" type="number" min="0" tabindex="13">
+              </div>
+
+              <div class="block">
+                <label>最終ブロック率</label>
+                <input v-model.number="block_final" type="range" min="0" max="100">
+                <input v-model.number="block_final" type="number" min="0" tabindex="14">
+              </div>
+
+              <div class="block">
+                <label>防具タイプ補正 (%)</label>
+                <input v-model.number="sp_atk" type="range" min="50" max="150" step="12.5">
+                <input v-model.number="sp_atk" type="number" min="0" step="12.5" tabindex="16">
+              </div>
+
+              <div class="block">
+                <label>属性相性 (%)</label>
+                <input v-model.number="compat" type="range" min="50" max="150" step="12.5">
+                <input v-model.number="compat" type="number" min="0" step="12.5" tabindex="17">
+              </div>
+            </div>
+          </div>
+
+          <div class="attr-wrap">
+            <div class="atk-attr">
+              <table>
+              <thead>
+                <tr><th></th><th>クロース</th><th>レザー</th><th>プレート</th><th>アストラル</th></tr>
+              </thead>
+              <tbody>
+                <tr><th>素手</th><td></td><td></td><td></td><td>-50 %</td></tr>
+                <tr><th>斬</th><td>+25 %</td><td></td><td></td><td></td></tr>
+                <tr><th>突</th><td></td><td>+25 %</td><td></td><td></td></tr>
+                <tr><th>打</th><td></td><td></td><td>+25 %</td><td></td></tr>
+                <tr><th>弓</th><td>+12.5 %</td><td>+12.5 %</td><td></td><td></td></tr>
+                <tr><th>銃</th><td>+12.5 %</td><td>+12.5 %</td><td></td><td></td></tr>
+                <tr><th>大砲</th><td></td><td></td><td>+25 %</td><td></td></tr>
+                <tr><th>魔法</th><td></td><td></td><td></td><td>+25 %</td></tr>
+              </tbody>
+              </table>
+            </div>
+
+            <div class="ele-attr">
+              <table>
+              <thead>
+                <tr><th></th><th>火</th><th>氷</th><th>雷</th><th>地</th><th>毒</th><th>闇</th><th>聖</th><th>念</th></tr>
+              </thead>
+              <tbody>
+                <tr><th>火</th><td>-25 %</td><td></td><td></td><td>+50 %</td><td></td><td></td><td></td><td></td></tr>
+                <tr><th>氷</th><td>+50 %</td><td>-25 %</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><th>雷</th><td></td><td>+50 %</td><td>-25 %</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><th>地</th><td></td><td></td><td>+50 %</td><td>-25 %</td><td></td><td></td><td></td><td></td></tr>
+                <tr><th>毒</th><td>+12.5 %</td><td>+12.5 %</td><td>+12.5 %</td><td>+12.5 %</td><td>-25 %</td><td></td><td></td><td></td></tr>
+                <tr><th>闇</th><td></td><td></td><td></td><td></td><td></td><td>-25 %</td><td>+50 %</td><td></td></tr>
+                <tr><th>聖</th><td></td><td></td><td></td><td></td><td></td><td>-50 %</td><td>-25 %</td><td></td></tr>
+                <tr><th>念</th><td></td><td></td><td></td><td></td><td></td><td>+25 %</td><td>+25 %</td><td>+25 %</td></tr>
+              </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  </div>
+</div>
+
+  <script src="https://uuuui-tos.net/wp-content/themes/xeory_base/xeory_base/lib/js/dmg.js"></script>
+</body>
+
+</html>
